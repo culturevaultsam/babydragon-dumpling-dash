@@ -875,7 +875,7 @@ function results(){
   $('#rTown').textContent='Day '+G.day+': '+G.total+' dumplings for '+TOWN+' bowls.'+(won?'':' The store owners promise to be quicker tomorrow.');
   $('#rRank').innerHTML=order.map(a=>'<li class="'+(a.player?'me':'')+'">'+a.name+' &nbsp; '+a.score+'</li>').join('');
   G.lastScore=player.score;$('#rPrize').textContent=PRIZE;
-  $('#rNote').textContent=player.score>0&&ME.name?'Signed as '+ME.name+'. Your claim code is '+ME.code+'. Keep it to claim the prize.':'';
+  $('#rNote').textContent=player.score>0&&ME.name?'Signed as '+ME.name+'.'+(PRIZE?' Your claim code is '+ME.code+'. Keep it to claim the prize.':''):'';
   const list=loadHigh(),entry={d:player.score,n:ME.name||'YOU',now:true};
   if(player.score>0)list.push(entry);list.sort((a,b)=>b.d-a.d);const top=list.slice(0,8);
   renderHigh(top.map(e=>({name:e.n||'YOU',score:e.d,me:!!e.now})),LB_URL?'Live scoreboard: loading':'High scores on this device');
