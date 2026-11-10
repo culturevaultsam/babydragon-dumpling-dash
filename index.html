@@ -175,14 +175,14 @@ body{overscroll-behavior:none}
   html,body{overflow:hidden}
   body{padding-block:0;gap:0;padding-left:max(4px,env(safe-area-inset-left,0px));padding-right:max(4px,env(safe-area-inset-right,0px))}
   .keys{display:none}
-  .shell{max-width:none;width:100%;height:100dvh;border-radius:0;padding:5px;gap:5px;box-shadow:none;grid-template-areas:"left screen right";grid-template-columns:minmax(92px,1fr) auto minmax(92px,1fr)}
+  .shell{max-width:none;width:100%;height:100dvh;border-radius:0;padding:5px;gap:5px;box-shadow:none;grid-template-areas:"left screen right";grid-template-columns:minmax(104px,1fr) auto minmax(150px,1fr)}
   .bezel{padding:5px;display:flex;align-items:center;border-radius:8px}
-  #screen{width:min(calc((100dvh - 20px)*16/9),calc(100vw - 214px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)))}
+  #screen{width:min(calc((100dvh - 20px)*16/9),calc(100vw - 284px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)))}
   .pad,.pad.right,.pad.left{border-radius:12px;padding:8px 4px;flex-direction:column}
   .pad.left .cluster,.legend{display:none}
   .stick{width:100px;height:100px}.knob{width:58px;height:58px;margin:-29px}
-  .abxy{grid-template-columns:repeat(3,min(44px,9vh));grid-template-rows:repeat(3,min(44px,9vh));gap:1px}
-  .btn.big{width:min(46px,10vh);height:min(46px,10vh);font-size:16px}
+  .abxy{grid-template-columns:repeat(3,min(48px,12.5vh));grid-template-rows:repeat(3,min(48px,12.5vh));gap:1px}
+  .btn.big{width:min(52px,13.5vh);height:min(52px,13.5vh);font-size:17px}
 }
 </style>
 </head>
