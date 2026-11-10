@@ -590,8 +590,8 @@ function setSound(on){A.on=on;if(A.out)A.out.gain.value=on?.5:0;toast(on?'Sound 
 const G={bootT:0,state:'boot',t:0,zoom:1,camA:0,finT:0,phase:'',page:0};
 let TOWN=150;
 const DKEY='bd-dumpling-dash-day';
-G.day=1;try{G.day=Math.max(1,parseInt(localStorage.getItem(DKEY),10)||1);}catch(e){}
-function saveDay(){try{localStorage.setItem(DKEY,String(G.day));}catch(e){}}
+G.day=1;try{G.day=Math.max(1,parseInt(sessionStorage.getItem(DKEY),10)||1);}catch(e){}
+function saveDay(){try{sessionStorage.setItem(DKEY,String(G.day));}catch(e){}}
 const DAYS=[{rival:1.12,wake:18,gs:7.6,cap:3.2,restock:4.5,town:270},{rival:.9,wake:72,gs:5.2,cap:2.4,restock:3,town:190},{rival:.82,wake:90,gs:4.8,cap:2,restock:2.5,town:170}];
 let DF=DAYS[0];
 function applyDay(){DF=DAYS[Math.min(G.day,DAYS.length)-1];TOWN=DF.town;actors.forEach(a=>{a.speed=a.player?9:a.base*DF.rival;});}
@@ -621,8 +621,8 @@ function nextStory(){const full=STORY[G.page][1];if(G.typed<full.length){G.typed
 const nextChili=()=>(G.phase==='Evening'?4:14)+Math.random()*8;
 const hourNow=()=>H0+Math.min(1,G.t/DAY)*(H1-H0);
 const KEY='bd-dumpling-dash-v1';
-function loadHigh(){try{const v=JSON.parse(localStorage.getItem(KEY));return Array.isArray(v)?v:[];}catch(e){return[];}}
-function saveHigh(list){try{localStorage.setItem(KEY,JSON.stringify(list));}catch(e){}}
+function loadHigh(){try{const v=JSON.parse(sessionStorage.getItem(KEY));return Array.isArray(v)?v:[];}catch(e){return[];}}
+function saveHigh(list){try{sessionStorage.setItem(KEY,JSON.stringify(list));}catch(e){}}
 function showBest(){const h=loadHigh();$('#best').textContent='Day '+G.day+'. '+(h.length?('High score: '+h[0].d+' dumplings'):'No high score yet.')+(G.day>1?' Press Y to start over from Day 1.':'');}
 showBest();
 {const h=$('#title h1');h.lastChild.remove();h.insertAdjacentHTML('beforeend',Array.from('Dumpling Dash').map((ch,i)=>'<span style="color:'+RAINBOW[i%6]+'">'+ch+'</span>').join(''));}
@@ -850,11 +850,11 @@ function cerCam(now){
 /* ---------- scoreboard, name and sharing ---------- */
 const LB_URL='';   /* live scoreboard endpoint; empty keeps scores on this device only */
 const SHARE_URL='https://culturevaultsam.github.io/babydragon-dumpling-dash/';
-const PRIZE=LB_URL?'Top score wins free dumplings at the Baby Dragon opening show, 5 February.':'';
+const PRIZE='Top score wins free dumplings at the Baby Dragon opening show, 5 February.';
 const MKEY='bd-dumpling-dash-me',ME={name:'',code:''};
-try{Object.assign(ME,JSON.parse(localStorage.getItem(MKEY))||{});}catch(e){}
+try{Object.assign(ME,JSON.parse(sessionStorage.getItem(MKEY))||{});}catch(e){}
 if(!ME.code){const al='ABCDEFGHJKMNPQRSTUVWXYZ23456789',b=new Uint8Array(6);(window.crypto||window.msCrypto).getRandomValues(b);ME.code=Array.from(b).map(v=>al[v%al.length]).join('');}
-function saveMe(){try{localStorage.setItem(MKEY,JSON.stringify(ME));}catch(e){}}
+function saveMe(){try{sessionStorage.setItem(MKEY,JSON.stringify(ME));}catch(e){}}
 saveMe();$('#tPrize').textContent=PRIZE;$('#nPrize').textContent=PRIZE;
 function askName(){$('#cer').hidden=true;if(ME.name||player.score<=0){results();return;}G.state='name';$('#nameBox').hidden=false;try{$('#pname').focus();}catch(e){}}
 function saveName(){if(G.state!=='name')return;const v=$('#pname').value.toUpperCase().replace(/[^A-Z0-9 _-]/g,'').trim().slice(0,12);if(!v){$('#pname').focus();return;}ME.name=v;saveMe();$('#pname').blur();$('#nameBox').hidden=true;results();}
@@ -878,7 +878,7 @@ function results(){
   $('#rNote').textContent=player.score>0&&ME.name?'Signed as '+ME.name+'.'+(PRIZE?' Your claim code is '+ME.code+'. Keep it to claim the prize.':''):'';
   const list=loadHigh(),entry={d:player.score,n:ME.name||'YOU',now:true};
   if(player.score>0)list.push(entry);list.sort((a,b)=>b.d-a.d);const top=list.slice(0,8);
-  renderHigh(top.map(e=>({name:e.n||'YOU',score:e.d,me:!!e.now})),LB_URL?'Live scoreboard: loading':'High scores on this device');
+  renderHigh(top.map(e=>({name:e.n||'YOU',score:e.d,me:!!e.now})),LB_URL?'Live scoreboard: loading':'High scores this session');
   top.forEach(e=>delete e.now);saveHigh(top);
   if(LB_URL)lbSubmit(player.score).then(r=>{if(G.state!=='results')return;
     if(r&&r.top)renderHigh(r.top.slice(0,8).map((e,i)=>({name:e.name,score:e.score,me:r.rank===i+1})),'Live scoreboard'+(r.rank?': you are number '+r.rank:''));
