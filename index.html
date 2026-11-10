@@ -712,7 +712,7 @@ let TOWN=150;
 const DKEY='bd-dumpling-dash-day';
 G.day=1;try{G.day=Math.max(1,parseInt(sessionStorage.getItem(DKEY),10)||1);}catch(e){}
 function saveDay(){try{sessionStorage.setItem(DKEY,String(G.day));}catch(e){}}
-const DAYS=[{rival:1.12,wake:18,gs:7.6,cap:3.2,restock:4.5,town:270},{rival:.9,wake:72,gs:5.2,cap:2.4,restock:3,town:190},{rival:.82,wake:90,gs:4.8,cap:2,restock:2.5,town:170}];
+const DAYS=[{rival:1.12,wake:18,gs:7.6,cap:3.2,restock:4.5,town:200},{rival:.9,wake:72,gs:5.2,cap:2.4,restock:3,town:190},{rival:.82,wake:90,gs:4.8,cap:2,restock:2.5,town:170}];
 let DF=DAYS[0];
 function applyDay(){DF=DAYS[Math.min(G.day,DAYS.length)-1];TOWN=DF.town;actors.forEach(a=>{a.speed=a.player?9:a.base*DF.rival;});}
 const rank=()=>actors.slice().sort((a,b)=>b.score-a.score);
