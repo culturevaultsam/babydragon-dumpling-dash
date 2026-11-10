@@ -862,7 +862,7 @@ $('#bName').addEventListener('click',saveName);
 function renderHigh(rows,title){$('#rHighT').textContent=title;const ol=$('#rHigh');ol.textContent='';
   if(!rows.length){const li=document.createElement('li');li.textContent='No scores yet';ol.appendChild(li);return;}
   rows.forEach((r,i)=>{const li=document.createElement('li');li.textContent=String(r.name).slice(0,12)+'  '+r.score;if(r.me)li.className='me';li.style.animationDelay=(i*.12)+'s';ol.appendChild(li);});}
-async function lbSubmit(score){try{const r=await fetch(LB_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:ME.name,code:ME.code,score,day:G.day})});return r.ok?await r.json():null;}catch(e){return null;}}
+async function lbSubmit(score){try{const r=await fetch(LB_URL,score>0&&ME.name?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name:ME.name,code:ME.code,score,day:G.day})}:{});return r.ok?await r.json():null;}catch(e){return null;}}
 $('#bShare').addEventListener('click',async()=>{
   const t='I steamed '+(G.lastScore||0)+' dumplings in Baby Dragon Dumpling Dash. '+PRIZE+' Try your hand: '+SHARE_URL;
   try{if(navigator.share){await navigator.share({title:'Baby Dragon Dumpling Dash',text:t});return;}}catch(e){if(e&&e.name==='AbortError')return;}
@@ -880,7 +880,7 @@ function results(){
   if(player.score>0)list.push(entry);list.sort((a,b)=>b.d-a.d);const top=list.slice(0,8);
   renderHigh(top.map(e=>({name:e.n||'YOU',score:e.d,me:!!e.now})),LB_URL?'Live scoreboard: loading':'High scores on this device');
   top.forEach(e=>delete e.now);saveHigh(top);
-  if(LB_URL&&player.score>0)lbSubmit(player.score).then(r=>{if(G.state!=='results')return;
+  if(LB_URL)lbSubmit(player.score).then(r=>{if(G.state!=='results')return;
     if(r&&r.top)renderHigh(r.top.slice(0,8).map((e,i)=>({name:e.name,score:e.score,me:r.rank===i+1})),'Live scoreboard'+(r.rank?': you are number '+r.rank:''));
     else $('#rHighT').textContent='High scores on this device (live board unreachable)';});
   if(!won)G.day++;else if(G.day<2)G.day=2;saveDay();showBest();
