@@ -263,7 +263,7 @@ body{overscroll-behavior:none}
           <div class="press">Press A to start</div>
           <p id="best"></p>
           <p class="prize" id="tPrize"></p>
-          <p class="tiny">Game &copy; 2026 CULTURE VAULT. Created by Real Parent. Baby Dragon and its characters belong to the artist.</p>
+          <p class="tiny">Game &copy; 2026 CULTURE VAULT. Created by Real Parent.</p>
         </div>
         <div id="story" class="overlay" hidden><div class="say card"><span class="who" id="who"></span><p id="line"></p><span class="next">A ▶</span></div></div>
         <div id="mini" class="overlay" hidden><h2 id="mTitle"></h2><p id="mText"></p><div id="mArea"></div><div id="mRows" class="mrows"></div><div class="press" id="mPress"></div></div>
@@ -340,7 +340,7 @@ const ZH={
   'Welcome to the world of Baby Dragon. Rush wrappers, pork, chives and ginger from the four store owners to the steamer, dodge Gachapon, and feed the whole town before 6:00 PM.':'歡迎嚟到 Baby Dragon 嘅世界。快啲去四間舖頭攞餃子皮、豬肉、韭菜同薑，送去蒸籠，避開扭蛋機，喺晚上六點前餵飽成個鎮！',
   'Press A to start':'㩒 A 開始','Paused':'暫停','Press B to carry on':'㩒 B 繼續','presents':'呈獻','Tap to begin':'㩒一下開始',
   'Turn your phone sideways':'將手機打橫','Baby Dragon Dumpling Dash plays in landscape.':'Baby Dragon Dumpling Dash 要打橫玩。',
-  'Game © 2026 CULTURE VAULT. Created by Real Parent. Baby Dragon and its characters belong to the artist.':'遊戲 © 2026 CULTURE VAULT。由 Real Parent 創作。Baby Dragon 同所有角色屬於藝術家。',
+  'Game © 2026 CULTURE VAULT. Created by Real Parent.':'遊戲 © 2026 CULTURE VAULT。由 Real Parent 創作。',
   'Top score wins free dumplings at the Baby Dragon opening show, 5 February.':'最高分嘅玩家可以喺 2 月 5 號 Baby Dragon 開幕展免費食餃子。',
   'Welcome to the world of Baby Dragon, a market town of pagodas and blossom, where every evening ends at the Dumpling Market.':'歡迎嚟到 Baby Dragon 嘅世界：一個有寶塔同藍花楹嘅街市小鎮，每一晚都喺餃子市場度完結。',
   'Meet the four baby dragons. Auri Chromi, bright as chrome, and three friends in blue, red and black. Small, fluffy and always hungry.':'嚟識下四隻小龍。Auri Chromi 閃到好似鉻咁，仲有藍、紅、黑三個朋友。細細粒、毛茸茸，成日都肚餓。',
@@ -631,12 +631,18 @@ const puffTex=tex(64,64,(g)=>{const r=g.createRadialGradient(32,32,2,32,32,30);r
 const puffs=[];for(let i=0;i<10;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:puffTex,transparent:true,depthWrite:false}));s.userData.t=i/10;scene.add(s);puffs.push(s);}
 const marketLight=new THREE.PointLight(0xffb060,0,40,1.6);marketLight.position.set(0,7,0);scene.add(marketLight);
 
-/* the golden tree at the heart of the market */
+/* the golden tree at the heart of the market: bare, just trunk and branches */
 {
-  const gold=new THREE.MeshPhongMaterial({color:'#ffcc33',emissive:'#b8860b',emissiveIntensity:.4,shininess:90,flatShading:true}),bark=M('#a8741f'),GT=new THREE.Group();GT.position.set(0,0,-5.6);scene.add(GT);
-  mesh(new THREE.CylinderGeometry(.5,.95,6.4,6),bark,0,3.2,0,GT,false);
-  [[-1,5.7,.3,.7],[1.1,6,-.2,-.7]].forEach(b=>{const br=mesh(new THREE.CylinderGeometry(.2,.32,3,5),bark,b[0],b[1],b[2],GT,false);br.rotation.z=b[3];});
-  [[0,8.8,0,2.7],[-2.3,7.8,.5,2],[2.4,8,-.4,2.1],[.3,7.7,1.9,1.8],[-.4,8,-2.1,1.9],[0,10.6,0,1.7]].forEach(q=>{const c=mesh(new THREE.SphereGeometry(q[3],7,5),gold,q[0],q[1],q[2],GT,false);c.scale.y=.72;});
+  const gold=new THREE.MeshPhongMaterial({color:'#ffcc33',emissive:'#b8860b',emissiveIntensity:.45,shininess:110,specular:0xfff2b0,flatShading:true}),GT=new THREE.Group();GT.position.set(0,0,-5.6);scene.add(GT);
+  const upv=new THREE.Vector3(0,1,0);
+  /* a limb from point p along direction d, then a few thinner limbs forking off its tip */
+  const limb=(p,d,len,r,depth)=>{
+    const dir=d.clone().normalize(),c=mesh(new THREE.CylinderGeometry(r*.6,r,len,5),gold,p.x+dir.x*len/2,p.y+dir.y*len/2,p.z+dir.z*len/2,GT,false);c.quaternion.setFromUnitVectors(upv,dir);
+    if(depth<=0)return;const tip=p.clone().addScaledVector(dir,len*.96),n=depth>1?3:2;
+    for(let k=0;k<n;k++){const a=k/n*6.283+depth*1.3+p.x,sp=.75;limb(tip,new THREE.Vector3(dir.x+Math.cos(a)*sp,dir.y*.9+.25,dir.z+Math.sin(a)*sp),len*.68,r*.6,depth-1);}
+  };
+  limb(new THREE.Vector3(0,0,0),new THREE.Vector3(.04,1,0),4.6,.8,3);
+  mesh(new THREE.CylinderGeometry(.95,1.25,.5,6),gold,0,.25,0,GT,false);
   obstacles.push({x:0,z:-5.6,r:1.3,id:'tree'});
 }
 /* golden chili */
